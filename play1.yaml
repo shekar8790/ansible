@@ -1,0 +1,8 @@
+---
+- hosts: web01
+  become: yes
+  
+  tasks:
+        - name: installing apache
+          apt: name=apache2 state=present
+...
