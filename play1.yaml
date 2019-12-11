@@ -1,8 +1,22 @@
 ---
 - hosts: web01
   become: yes
-  
+  gather_facts: false
+
   tasks:
         - name: installing apache
           apt: name=apache2 state=present
-...
+        - name: downloading tomcat
+          get_url: url=http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.49/bin/apache-tomcat-8.5.49.tar.gz dest=/root
+        - name: unarchive
+          unarchive: src=/root/apache-tomcat-8.5.49.tar.gz dest=/root remote_src=yes
+      # - name: copy
+        # copy: src=/home/ubuntu/vprofile-v1.war dest=/root/apache-tomcat-8.5.49/webapps remote_src=yes 
+        - name: shell run
+          shell: nohup /root/apache-tomact-8.5.49/bin/startup.sh &
+          notify:
+                 - restart tomcat
+  handlers:
+           - name: restart tomcat
+            # shell: nohup /root/apache-tomact-8.5.49/bin/shutdown.sh &
+             shell: nohup /root/apache-tomact-8.5.49/bin/startup.sh &        
